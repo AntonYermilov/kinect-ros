@@ -3,7 +3,7 @@
 #include <octomap/AbstractOcTree.h>
 #include <octomap/math/Pose6D.h>
 
-#include "convertor/CameraImage.h"
+#include "kinect_scan/CameraImage.h"
 
 #include <iostream>
 #include <vector>
