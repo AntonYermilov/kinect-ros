@@ -1,0 +1,39 @@
+#!/bin/bash
+
+BIN="../bin"
+TESTS="../tests"
+EXE="kinect_scan"
+
+if [[ $# != 1 || "$1" != "run" && "$1" != "clean" ]] # || ([ "$1" -ne "run" ] && [ "$1" -ne "clean" ])
+then
+    echo "Invalid arguments. Try './run_tests [run|clean]'"
+    exit 1
+fi
+
+if [ "$1" == "run" ]
+then
+    for gen in $BIN/create_map_*
+    do
+        map_id=$(grep -oP "(?<=create_map_).*" <<< "$gen")
+        map_dir="$TESTS/simple_map_$map_id"
+        mkdir -p $map_dir
+        
+        eval " ./$gen $TESTS/tmp.bt"
+        echo " done"
+    
+        for camera_input in $TESTS/camera_position/camera_*
+        do
+            cam_id=$(grep -oP "\d+(?=\.data$)" <<< "$camera_input")
+            echo "running test #${cam_id}..."
+            eval "./$BIN/$EXE $TESTS/tmp.bt $camera_input $TESTS/tmp.img"
+            eval "./visualize $TESTS/tmp.img $map_dir/camera_${cam_id}.jpg"
+            rm "$TESTS/tmp.img"
+        done
+        rm "$TESTS/tmp.bt"
+    done
+fi
+
+if [ "$1" == "clean" ]
+then
+    rm -rf $TESTS/simple_map_*
+fi
