@@ -3,7 +3,7 @@
 #include <octomap/AbstractOcTree.h>
 #include <octomap/math/Pose6D.h>
 
-#include "kinect_scan/CameraImage.h"
+#include "kinect_ros/CameraImage.h"
 
 #include <iostream>
 #include <vector>
@@ -51,6 +51,9 @@ void processPoint(const Pose6D camera, const point3d& center, const double& radi
     for (int dx = -blockSz; dx <= blockSz; dx++) {
         for (int dy = -blockSz; dy <= blockSz; dy++) {
             for (int dz = -blockSz; dz <= blockSz; dz++) {
+                if (abs(dx) < blockSz && abs(dy) < blockSz && abs(dz) < blockSz)
+                    continue;
+
                 point3d point(center.x() + dx * radius / blockSz, center.y() + dy * radius / blockSz, center.z() + dz * radius / blockSz);
 
                 int i, j;
