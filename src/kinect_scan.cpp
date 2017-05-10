@@ -71,6 +71,11 @@ void getDistanceMatrix(const Pose6D& camera, const OcTree& tree, CameraImage& im
         processPoint(camera, iter.getCoordinate(), iter.getSize() / 2, image);
 }
 
+void readPose(std::ifstream& ifs, Pose6D& pose) {
+    ifs >> pose.trans().x() >> pose.trans().y() >> pose.trans().z();
+    ifs >> pose.rot().u() >> pose.rot().x() >> pose.rot().y() >> pose.rot().z();
+}
+
 int main(int argc, char** argv) {
     ros::init(argc, argv, "kinect_scan");
     ros::Time::init();
@@ -88,7 +93,7 @@ int main(int argc, char** argv) {
         
         std::ifstream ifs_cam(argv[2]);
         Pose6D camera;
-        camera.read(ifs_cam);
+        readPose(ifs_cam, camera);
         ifs_cam.close();
 
         
